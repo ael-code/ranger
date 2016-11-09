@@ -6,6 +6,9 @@
 import os.path
 import sys
 import tempfile
+from logging import getLogger
+
+log = getLogger(__name__)
 
 
 def main():
@@ -15,6 +18,9 @@ def main():
     from ranger.container.settings import Settings
     from ranger.core.shared import FileManagerAware, SettingsAware
     from ranger.core.fm import FM
+    from ranger.ext.logutils import setup_logging
+
+    setup_logging()
 
     try:
         locale.setlocale(locale.LC_ALL, '')
@@ -32,6 +38,8 @@ def main():
         os.environ['SHELL'] = 'sh'
 
     ranger.arg = arg = parse_arguments()
+    setup_logging(debug=arg.debug)
+
     if arg.copy_config is not None:
         fm = FM()
         fm.copy_config_files(arg.copy_config)
