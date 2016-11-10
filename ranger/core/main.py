@@ -25,7 +25,7 @@ def main():
     try:
         locale.setlocale(locale.LC_ALL, '')
     except Exception:
-        print("Warning: Unable to set locale.  Expect encoding problems.")
+        log.warning("Unable to set locale.  Expect encoding problems")
 
     # so that programs can know that ranger spawned them:
     level = 'RANGER_LEVEL'
@@ -77,9 +77,8 @@ def main():
             print("File or directory doesn't exist: %s" % target)
             return 1
         elif os.path.isfile(target):
-            sys.stderr.write("Warning: Using ranger as a file launcher is "
-                   "deprecated.\nPlease use the standalone file launcher "
-                   "'rifle' instead.\n")
+            log.warning("Using ranger as a file launcher is deprecated. "
+                        "Please use the standalone file launcher 'rifle' instead.")
 
             from ranger.ext.rifle import Rifle
             fm = FM()
@@ -112,13 +111,13 @@ def main():
             return 1 if arg.fail_unless_cd else 0  # COMPAT
 
         if not sys.stdin.isatty():
-            sys.stderr.write("Error: Must run ranger from terminal\n")
+            log.error("Must run ranger from terminal")
             raise SystemExit(1)
 
         if fm.username == 'root':
             fm.settings.preview_files = False
             fm.settings.use_preview_script = False
-            fm.log.appendleft("Running as root, disabling the file previews.")
+            log.info("Running as root, disabling the file previews.")
         if not arg.debug:
             from ranger.ext import curses_interrupt_handler
             curses_interrupt_handler.install_interrupt_handler()
@@ -247,7 +246,7 @@ def parse_arguments():
     arg.cachedir = expanduser(default_cachedir)
 
     if arg.fail_unless_cd:  # COMPAT
-        sys.stderr.write("Warning: The option --fail-unless-cd is deprecated.\n"
+        log.warning("Warning: The option --fail-unless-cd is deprecated.\n"
             "It was used to facilitate using ranger as a file launcher.\n"
             "Now, please use the standalone file launcher 'rifle' instead.\n")
 
@@ -319,10 +318,9 @@ def load_settings(fm, clean):
                     else:
                         module = importlib.import_module('plugins.' + plugin)
                         fm.commands.load_commands_from_module(module)
-                    fm.log.appendleft("Loaded plugin '%s'." % plugin)
-                except Exception:
-                    import traceback
-                    fm.log.extendleft(reversed(traceback.format_exc().splitlines()))
+                    log.info("Loaded plugin '%s'." % plugin)
+                except Exception as e:
+                    log.exception(e)
                     fm.notify("Error in plugin '%s'" % plugin, bad=True)
             ranger.fm = None
 

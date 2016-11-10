@@ -74,9 +74,9 @@ class FM(Actions, SignalDispatcher):
         self.hostname = socket.gethostname()
         self.home_path = os.path.expanduser('~')
 
-        self.log.appendleft('ranger {0} started! Process ID is {1}.'
+        log.info('ranger {0} started! Process ID is {1}'
                 .format(__version__, os.getpid()))
-        self.log.appendleft('Running on Python ' + sys.version.replace('\n', ''))
+        log.info('Running on Python ' + sys.version.replace('\n', ''))
 
         mimetypes.knownfiles.append(os.path.expanduser('~/.mime.types'))
         mimetypes.knownfiles.append(self.relpath('data/mime.types'))
@@ -255,7 +255,7 @@ class FM(Actions, SignalDispatcher):
 
     def copy_config_files(self, which):
         if ranger.arg.clean:
-            sys.stderr.write("refusing to copy config files in clean mode\n")
+            log.error("refusing to copy config files in clean mode")
             return
         import shutil
         from errno import EEXIST
@@ -277,7 +277,7 @@ class FM(Actions, SignalDispatcher):
                 try:
                     shutil.copy(self.relpath(_from), self.confpath(to))
                 except Exception as e:
-                    sys.stderr.write("  ERROR: %s\n" % str(e))
+                    log.error(e)
         if which == 'rifle' or which == 'all':
             copy('config/rifle.conf', 'rifle.conf')
         if which == 'commands' or which == 'all':
@@ -301,7 +301,7 @@ class FM(Actions, SignalDispatcher):
                 "\033[1mRANGER_LOAD_DEFAULT_RC\033[0m to "
                 "\033[1mFALSE\033[0m.\n")
         else:
-            sys.stderr.write("Unknown config file `%s'\n" % which)
+            log.error("Unknown config file `%s'\n" % which)
 
     def confpath(self, *paths):
         """returns the path relative to rangers configuration directory"""
