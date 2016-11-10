@@ -6,6 +6,7 @@
 import os.path
 import sys
 import tempfile
+from ranger import __version__
 from logging import getLogger
 
 log = getLogger(__name__)
@@ -40,6 +41,9 @@ def main():
     ranger.arg = arg = parse_arguments()
     setup_logging(debug=arg.debug)
 
+    log.info("Ranger version {0}".format(__version__))
+    log.info('Running on Python ' + sys.version.replace('\n', ''))
+    log.info("Process ID is {0}".format(os.getpid()))
     log.debug("config dir: '{}'".format(arg.confdir))
     log.debug("cache dir: '{}'".format(arg.cachedir))
 
