@@ -47,6 +47,12 @@ def main():
     log.debug("config dir: '{}'".format(arg.confdir))
     log.debug("cache dir: '{}'".format(arg.cachedir))
 
+    def crazy_log():
+        log.info("crazy log")
+
+    from threading import Timer
+    Timer(1, crazy_log).start()
+
     if arg.copy_config is not None:
         fm = FM()
         fm.copy_config_files(arg.copy_config)
