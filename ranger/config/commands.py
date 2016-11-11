@@ -108,6 +108,7 @@ class echo(Command):
     Display the text in the statusbar.
     """
     def execute(self):
+        #self.log.debug('echo')
         self.fm.notify(self.rest(1))
 
 
